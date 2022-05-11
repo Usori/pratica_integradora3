@@ -96,7 +96,7 @@ class EstacaoMeteorologica{
             arrayRegistros.push(registro);
             return;
         }
-        arrayRegistros[pos_registro].agruparRegistro[registro];
+        arrayRegistros[pos_registro].agruparRegistro(registro);
         // processamento de insercao e agrupamento
     }
 
@@ -128,19 +128,43 @@ class EstacaoMeteorologica{
         let j = pos_b-1;
 
         while(i < j){
-            while(this.comparar_chaves_registros(arrayRegistros[i], arrayRegistros[pos_pivot], chave, ordem)){
+            
+            while(this.comparar_chaves_registros(arrayRegistros[i], arrayRegistros[pos_pivot], chave, ordem) && i < j){
                 i++;
             }
-            while(this.comparar_chaves_registros(arrayRegistros[pos_pivot], arrayRegistros[j], chave, ordem)){
+            console.log("Saiu do laço while 'i': (i,J) ("+i+","+j+"); "+arrayRegistros[i][chave]+", "+arrayRegistros[j][chave]);
+            if (i == j){
+                break;
+            }
+            
+            
+            while(this.comparar_chaves_registros(arrayRegistros[pos_pivot], arrayRegistros[j], chave, ordem) && i < j){
                 j--;
             }
+            console.log("Saiu do laço while 'j': (i,j) ("+i+","+j+"); "+arrayRegistros[i][chave]+", "+arrayRegistros[j][chave]);
+            if (i == j){
+                break;
+            }
+            
+            console.log("Trocando: "+arrayRegistros[i][chave]+" por: "+arrayRegistros[j][chave]);
             this.swap_registro(arrayRegistros, i, j);
         }
-        this.swap_registro(arrayRegistros, i, pos_pivot);
-        return i;
+
+        // se vetor[pos_pivot] ordem vetor[j], troca
+        if(this.comparar_chaves_registros(arrayRegistros[pos_pivot], arrayRegistros[i], chave, ordem)){
+            console.log("Troca Pivot pos_pivot por pos_i: "+arrayRegistros[pos_pivot][chave]+" por : "+arrayRegistros[i][chave]);
+            this.swap_registro(arrayRegistros, i, pos_pivot);
+            console.log("Resultado particiona: i: "+i+" j: "+j+" pos_pivot: "+pos_pivot);
+            console.log()
+            return i;
+        }
+        return pos_pivot;
     }
 
     quicksort_chave_ordem(arrayRegistros, pos_a, pos_b, chave, ordem){
+        console.log(pos_a);
+        console.log(pos_b);
+        console.log(arrayRegistros)
         if(pos_a >= pos_b){
             return;
         }
@@ -177,7 +201,7 @@ class EstacaoMeteorologica{
         let registro1 = new RegistroINMET('01/10/1995', 12.5, 28.3, 22.5, 25.3, 23.9);
         let registro2 = new RegistroINMET('02/10/1995', 10, 30, 10, 10, 15);
         let registro3 = new RegistroINMET('02/10/1995', 5, 20, 20, 30, 16);
-        let registro4 = new RegistroINMET('03/10/1995', 12.1, 26.3, 22.5, 25.3, 23.9);
+        let registro4 = new RegistroINMET('03/10/1995', 4.2, 26.3, 22.5, 25.3, 23.9);
         let registro5 = new RegistroINMET('04/10/1995', 11.4, 23.3, 22.5, 25.3, 23.9);
 
         this.inserirRegistroAgrupando(regs_unicos_2021, registro1);
@@ -200,7 +224,20 @@ class EstacaoMeteorologica{
         console.log(this.comparar_chaves_registros(registro1, registro2, "temp_max", "asc"));
         console.log();
 
-        console.log(this.particiona_chave_ordem(regs_unicos_2021, 0, regs_unicos_2021.length-1, "timestamp", "asc"));
+        /*
+        let chave = "timestamp";
+        let ordem = "asc";
+        this.quicksort_chave_ordem(regs_unicos_2021, 0, regs_unicos_2021.length-1, chave, ordem);
+        console.log(regs_unicos_2021);
+        console.log();
+        */
+
+        let chave = "data";
+        let ordem = "asc";
+        //this.quicksort_chave_ordem(regs_unicos_2021, 0, regs_unicos_2021.length-1, chave, ordem);
+        //this.particiona_chave_ordem(regs_unicos_2021, 0, regs_unicos_2021.length-1, chave, ordem);
+        //this.particiona_chave_ordem(regs_unicos_2021, 0, regs_unicos_2021.length-1, chave, ordem);
+        this.quicksort_chave_ordem(regs_unicos_2021, 0, regs_unicos_2021.length-1, chave, ordem);
         console.log(regs_unicos_2021);
         console.log();
     }
